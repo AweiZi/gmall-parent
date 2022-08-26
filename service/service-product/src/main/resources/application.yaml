@@ -1,0 +1,18 @@
+server:
+  port: 8000
+spring:
+  zipkin:
+    base-url: http://192.168.6.99:9411/
+    sender:
+      type: web
+  datasource:
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.6.99:3306/gmall_product?useSSL=false&characterEncoding=utf-8
+app:
+  minio:
+    endpointUrl: http://192.168.6.99:9000
+    accessKey: admin
+    secreKey: admin123456
+    bucketName: gmall
