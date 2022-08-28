@@ -2,7 +2,7 @@ package com.atguigu.gmall.product.controller;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.BaseSaleAttr;
-import com.atguigu.gmall.model.product.SpuSaleAttrValue;
+import com.atguigu.gmall.model.product.SpuSaleAttr;
 import com.atguigu.gmall.product.service.BaseSaleAttrService;
 import com.atguigu.gmall.product.service.SpuSaleAttrService;
 import io.swagger.annotations.ApiOperation;
@@ -37,7 +37,7 @@ public class BaseSaleAttrController {
     @ApiOperation(value = "根据spuId获取销售属性")
     @GetMapping("spuSaleAttrList/{spuId}")
     public Result getSpuSaleAttrList(@PathVariable Long spuId) {
-        List<SpuSaleAttrValue> listSaleAttr = saleAttrService.getSaleAttrAndValueBySpuId(spuId);
+        List<SpuSaleAttr> listSaleAttr = saleAttrService.getSaleAttrAndValueBySpuId(spuId);
         return Result.ok(listSaleAttr);
     }
 }

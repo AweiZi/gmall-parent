@@ -16,3 +16,6 @@ app:
     accessKey: admin
     secreKey: admin123456
     bucketName: gmall
+  thread-pool:
+    core: 4
+    max: 8
