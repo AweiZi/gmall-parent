@@ -16,6 +16,7 @@ public class ItemController {
 
     @Autowired
     SkuDetailFeignClient skuDetailFeignClient;
+
     /*
      * 商品详情页
      * */
@@ -24,14 +25,19 @@ public class ItemController {
                        Model model) {
         //远程查询出商品的详细信息
         Result<SkuDetailTo> result = skuDetailFeignClient.getSkuDetail(skuId);
-        if (result.isOk()){
-            SkuDetailTo skuDetailTo = result.getData();
-            model.addAttribute("categoryView", skuDetailTo.getCategoryView());
-            model.addAttribute("skuInfo",skuDetailTo.getSkuInfo());
-            model.addAttribute("spuSaleAttrList",skuDetailTo.getSpuSaleAttrList());
-            model.addAttribute("valuesSkuJson",skuDetailTo.getValuesSkuJson());
 
+        if (result.isOk()) {
+            SkuDetailTo skuDetailTo = result.getData();
+            if (skuDetailTo == null || skuDetailTo.getSkuInfo() == null) {
+                //说明远程没有查到商品
+                return "item/404";
+            }
+            model.addAttribute("categoryView",skuDetailTo.getCategoryView());
+            model.addAttribute("skuInfo",skuDetailTo.getSkuInfo());
+            model.addAttribute("price",skuDetailTo.getPrice());
+            model.addAttribute("spuSaleAttrList",skuDetailTo.getSpuSaleAttrList());//spu的销售属性列表
+            model.addAttribute("valuesSkuJson",skuDetailTo.getValuesSkuJson());//json
         }
-         return "item/index";
+        return "item/index";
     }
 }

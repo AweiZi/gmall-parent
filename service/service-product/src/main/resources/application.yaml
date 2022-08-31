@@ -5,6 +5,9 @@ spring:
     base-url: http://192.168.6.99:9411/
     sender:
       type: web
+  redis:
+    host: 192.168.6.99
+    password: gby19980810
   datasource:
     username: root
     password: 123456
