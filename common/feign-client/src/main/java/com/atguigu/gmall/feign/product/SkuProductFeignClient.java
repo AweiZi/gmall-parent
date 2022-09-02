@@ -1,4 +1,4 @@
-package com.atguigu.gmall.item.feigh;
+package com.atguigu.gmall.feign.product;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.SkuImage;
@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.math.BigDecimal;
 import java.util.List;
 
+
 @RequestMapping("/api/inner/rpc/product")
 @FeignClient("service-product")
-public interface SkuDetailFeignClient {
-//    @GetMapping("/skudetail/{skuId}")
+public interface SkuProductFeignClient {
+
+//    @GetMapping("/skudetail/{skuId}")  //不要用这个超级接口
 //    Result<SkuDetailTo> getSkuDetail(@PathVariable("skuId") Long skuId);
+
     /**
      * 查询sku的基本信息
      * @param skuId
@@ -52,7 +55,7 @@ public interface SkuDetailFeignClient {
      */
     @GetMapping("/skudetail/saleattrvalues/{skuId}/{spuId}")
     Result<List<SpuSaleAttr>> getSkuSaleattrvalues(@PathVariable("skuId") Long skuId,
-                                                   @PathVariable("spuId") Long spuId);
+                                                          @PathVariable("spuId") Long spuId);
 
 
     /**

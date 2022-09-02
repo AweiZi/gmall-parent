@@ -2,18 +2,15 @@ package com.atguigu.gmall.item;
 
 
 import com.atguigu.gmall.common.annotation.EnableThreadPool;
-import com.atguigu.gmall.common.config.RedissonAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
 
-@Import(RedissonAutoConfiguration.class)
+//@Import(RedissonAutoConfiguration.class)
 @EnableThreadPool
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.atguigu.gmall.feign.product")
 @SpringCloudApplication
-@EnableAspectJAutoProxy//开启aspect（aop// ）的自动代理功能
+//@EnableAspectJAutoProxy//开启aspect（aop// ）的自动代理功能
 public class ItemMainApplication {
 
     public static void main(String[] args) {

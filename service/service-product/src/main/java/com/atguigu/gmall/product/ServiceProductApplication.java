@@ -1,7 +1,6 @@
 package com.atguigu.gmall.product;
 
 import com.atguigu.gmall.common.annotation.EnableThreadPool;
-import com.atguigu.gmall.common.config.RedissonAutoConfiguration;
 import com.atguigu.gmall.common.config.Swagger2Config;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling//开启定时任务
 @EnableThreadPool
 @MapperScan("com.atguigu.gmall.product.mapper")
-@Import({Swagger2Config.class, RedissonAutoConfiguration.class})
+@Import({Swagger2Config.class})
 public class ServiceProductApplication {
 
     public static void main(String[] args) {

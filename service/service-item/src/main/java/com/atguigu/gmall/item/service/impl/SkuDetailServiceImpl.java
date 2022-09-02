@@ -1,22 +1,23 @@
 package com.atguigu.gmall.item.service.impl;
 
-import com.alibaba.cloud.commons.lang.StringUtils;
+
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
-import com.atguigu.gmall.item.cache.service.CacheOpsService;
-import com.atguigu.gmall.item.cache.annotation.GmallCache;
-import com.atguigu.gmall.item.feigh.SkuDetailFeignClient;
+import com.atguigu.gmall.feign.product.SkuProductFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.model.product.SpuSaleAttr;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
+import com.atguigu.starter.cache.annotation.GmallCache;
+import com.atguigu.starter.cache.service.CacheOpsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 public class SkuDetailServiceImpl implements SkuDetailService {
     @Autowired
-    SkuDetailFeignClient skuDetailFeignClient;
+    SkuProductFeignClient skuDetailFeignClient;
 
     /**
      * 可配置的线程池，可自动注入
@@ -52,7 +53,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @GmallCache(cacheKey =SysRedisConst.SKU_INFO_PREFIX+"#{#params[0]}",
                 bloomName =SysRedisConst.BLOOM_SKUID,
                 bloomValue = "#{#params[0]}",
-    lockName=SysRedisConst.LOCK_SKU_DETAIL+"#{#params[0]}")
+                lockName=SysRedisConst.LOCK_SKU_DETAIL+"#{#params[0]}",
+                ttl = 60*60*24*7L)
     @Override
     public SkuDetailTo getSkuDetail(Long skuId) {
         SkuDetailTo fromRpc = getSkuDetailRpc(skuId);

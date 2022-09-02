@@ -3,6 +3,7 @@ package com.atguigu.gmall.product.controller;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.product.service.SkuInfoService;
+import com.atguigu.starter.cache.service.CacheOpsService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 public class SkuController {
     @Autowired
     private SkuInfoService skuInfoService;
-
+    @Autowired
+    CacheOpsService cacheOpsService;
 
     /*
      *http://api.gmall.com/admin/product/list/{page}/{limit}
@@ -33,7 +35,7 @@ public class SkuController {
     @ApiOperation(value = "添加sku")
     @PostMapping("saveSkuInfo")
     public Result save(@RequestBody SkuInfo info) {
-//        sku的大保存
+        //        sku的大保存
         skuInfoService.saveSkuInfo(info);
 
         return Result.ok();
@@ -45,20 +47,25 @@ public class SkuController {
      * */
     @ApiOperation(value = "sku上架")
     @GetMapping("/onSale/{skuId}")
-    public Result onSale(@PathVariable("skuId")Long skuId){
+    public Result onSale(@PathVariable("skuId") Long skuId) {
         skuInfoService.onSale(skuId);
         return Result.ok();
     }
 
     /**
      * 商品下架
-     *
-     * @param skuId
-     * @return
      */
     @GetMapping("/cancelSale/{skuId}")
-    public Result cancelSale(@PathVariable("skuId")Long skuId){
+    public Result cancelSale(@PathVariable("skuId") Long skuId) {
         skuInfoService.cancelSale(skuId);
         return Result.ok();
+    }
+
+    /**
+     * 修改sku信息
+     */
+    public void updateSkuInfo(SkuInfo skuInfo) {
+//        skuInfoService.updateSkuInfo(skuInfo);
+//        cacheOpsService.delay2Delete(skuInfo.getId());
     }
 }
