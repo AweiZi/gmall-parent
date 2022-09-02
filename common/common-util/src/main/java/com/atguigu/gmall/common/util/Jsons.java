@@ -1,6 +1,7 @@
 package com.atguigu.gmall.common.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;
 
@@ -19,7 +20,7 @@ public class Jsons {
         }
     }
     /**
-     * 把json转为对象
+     * 把json转为普通对象
      * @param jsonStr
      * @param clz
      * @param <T>
@@ -38,4 +39,26 @@ public class Jsons {
         }
         return null;
     }
+
+    /**
+     * 带复杂泛型的json的逆转，可以兼容toObj(String jsonStr, Class<T> clz)
+     * @param jsonStr
+     * @param tr
+     * @param <T>
+     * @return
+     */
+    public static<T> T toObj(String jsonStr, TypeReference<T> tr){
+        if (StringUtils.isEmpty(jsonStr)){
+            return null;
+        }
+        T t = null;
+        try {
+            t = mapper.readValue(jsonStr, tr);
+            return t;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

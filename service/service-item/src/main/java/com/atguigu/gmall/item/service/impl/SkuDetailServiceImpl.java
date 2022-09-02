@@ -4,7 +4,8 @@ import com.alibaba.cloud.commons.lang.StringUtils;
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
-import com.atguigu.gmall.item.cache.CacheOpsService;
+import com.atguigu.gmall.item.cache.service.CacheOpsService;
+import com.atguigu.gmall.item.cache.annotation.GmallCache;
 import com.atguigu.gmall.item.feigh.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
@@ -40,6 +41,24 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Autowired
     CacheOpsService cacheOpsService;
     ReentrantLock lock = new ReentrantLock();
+
+//    @Transactional
+
+    /**
+     * 表达式中的params代表方法的所有参数列表
+     * @param skuId
+     * @return
+     */
+    @GmallCache(cacheKey =SysRedisConst.SKU_INFO_PREFIX+"#{#params[0]}",
+                bloomName =SysRedisConst.BLOOM_SKUID,
+                bloomValue = "#{#params[0]}",
+    lockName=SysRedisConst.LOCK_SKU_DETAIL+"#{#params[0]}")
+    @Override
+    public SkuDetailTo getSkuDetail(Long skuId) {
+        SkuDetailTo fromRpc = getSkuDetailRpc(skuId);
+        return fromRpc;
+    }
+
 
     //未缓存
     public SkuDetailTo getSkuDetailRpc(Long skuId) {
@@ -88,8 +107,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         return detailTo;
     }
 
-    @Override
-    public SkuDetailTo getSkuDetail(Long skuId) {
+
+    public SkuDetailTo getSkuDetailWithCache(Long skuId) {
         String cacheKey = SysRedisConst.SKU_INFO_PREFIX + skuId;
         //1、先查缓存
         SkuDetailTo cacheData = cacheOpsService.getCacheData(cacheKey, SkuDetailTo.class);
@@ -155,6 +174,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         SkuDetailTo skuDetailTo = Jsons.toObj(jsonStr, SkuDetailTo.class);
         return skuDetailTo;
     }
+
+
 
 
     //map作为缓存{本地缓存，}优缺点

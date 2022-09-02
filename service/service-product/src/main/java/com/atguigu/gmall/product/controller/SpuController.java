@@ -40,7 +40,7 @@ public class SpuController {
         return Result.ok(spuInfo);
     }
 
-    //        TODO
+
     @Autowired
     BaseTrademarkService baseTrademarkService;
 

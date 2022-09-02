@@ -18,8 +18,9 @@ public class SkuIdBloomInitService {
     SkuInfoService skuInfoService;
     @Autowired
     RedissonClient redissonClient;
-    //TODO 布隆只能增加商品，不能上出商品，如果数据库库真的删除了商品，布隆怎么办
-    //布隆重建
+    //TODO 布隆只能增加商品，不能删除商品，如果数据库库真的删除了商品，布隆怎么办
+    //定期布隆重建
+    //重建：按钮触发
 
     /**
      * 项目一运行就启动
@@ -30,6 +31,7 @@ public class SkuIdBloomInitService {
         //1.查出所有的skuid
         List<Long> skuIds = skuInfoService.findAllSkuId();
         //2.把所有的id初始化到布隆过滤器
+        //2.1获取布隆过滤器
         RBloomFilter<Object> filter = redissonClient.getBloomFilter(SysRedisConst.BLOOM_SKUID);
         //3.初始化布隆过滤器
         boolean exists = filter.isExists();
