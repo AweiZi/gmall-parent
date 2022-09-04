@@ -18,7 +18,6 @@ public class SkuIdBloomInitService {
     SkuInfoService skuInfoService;
     @Autowired
     RedissonClient redissonClient;
-    //TODO 布隆只能增加商品，不能删除商品，如果数据库库真的删除了商品，布隆怎么办
     //定期布隆重建
     //重建：按钮触发
 

@@ -41,6 +41,7 @@ public class CacheAspect {
     CacheOpsService cacheOpsService;
     //    创建一个表达式解析器  线程安全
     ExpressionParser parser = new SpelExpressionParser();
+    //创建一个模板解析器上下文
     ParserContext context = new TemplateParserContext();
 
     @Around("@annotation(com.atguigu.starter.cache.annotation.GmallCache)")
@@ -195,7 +196,7 @@ public class CacheAspect {
         //1.创建一个表达式解析器
         //2.得到一个表达式
         Expression exp = parser.parseExpression(expression, context);
-        //3.#{#params[0]}
+        //3.#{#params[0]}  计算解析器上下文
         StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
         //4.去除所有参数，绑定到上下文
         Object[] args = joinPoint.getArgs();
