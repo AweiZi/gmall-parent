@@ -47,7 +47,7 @@ public class CacheOpsServiceImpl implements CacheOpsService {
         return t;
     }
 
-    //TODO  练习
+
     @Override
     public Object getCacheData(String cacheKey, Type type) {
         String jsonStr = redisTemplate.opsForValue().get(cacheKey);
