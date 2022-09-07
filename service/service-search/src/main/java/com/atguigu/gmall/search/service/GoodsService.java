@@ -23,4 +23,6 @@ public interface GoodsService {
      * @return
      */
     SearchResponseVo search(SearchParamVo paramVo);
+
+    void updateHotScore(Long skuId, Long score);
 }

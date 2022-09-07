@@ -26,6 +26,11 @@ spring:
           uri: lb://service-activity
           predicates:
             - Path=/admin/activity/**
+
+        - id: user_route
+          uri: lb://service-user
+          predicates:
+              - Path=/api/user/**
         - id: item_route # 以 /admin/activity 开头的所有请求都lb(loadbalancer)转给service-activity
           uri: lb://service-item
           predicates:

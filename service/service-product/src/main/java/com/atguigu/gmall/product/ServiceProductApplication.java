@@ -12,13 +12,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 //@SpringBootApplication
 //@EnableDiscoveryClient
 //@EnableCircuitBreaker
-@SpringCloudApplication
-@EnableScheduling//开启定时任务
+@EnableFeignClients(basePackages = {
+        "com.atguigu.gmall.feign.search"
+})
+@EnableScheduling
 @EnableThreadPool
-
-@EnableFeignClients(basePackages = "com.atguigu.gmall.feign.search")
-@MapperScan("com.atguigu.gmall.product.mapper")
 @Import({Swagger2Config.class})
+@MapperScan("com.atguigu.gmall.product.mapper") //自动扫描这个包下的所有Mapper接口
+@SpringCloudApplication
 public class ServiceProductApplication {
 
     public static void main(String[] args) {

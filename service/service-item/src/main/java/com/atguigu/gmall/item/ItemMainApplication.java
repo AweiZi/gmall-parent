@@ -7,8 +7,11 @@ import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 //@Import(RedissonAutoConfiguration.class)
-@EnableThreadPool
-@EnableFeignClients(basePackages = "com.atguigu.gmall.feign.product")
+@EnableThreadPool //
+@EnableFeignClients(basePackages = {
+        "com.atguigu.gmall.feign.product",
+        "com.atguigu.gmall.feign.search"
+})
 @SpringCloudApplication
 //@EnableAspectJAutoProxy//开启aspect（aop// ）的自动代理功能
 public class ItemMainApplication {

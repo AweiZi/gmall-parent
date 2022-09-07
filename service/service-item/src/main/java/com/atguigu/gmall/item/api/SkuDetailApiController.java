@@ -15,13 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/inner/rpc/item")
 public class SkuDetailApiController {
     @Autowired
-    SkuDetailService skuDetailService;
+    SkuDetailService detailService;
 
     @GetMapping("/skudetail/{skuId}")
     public Result<SkuDetailTo> getSku(@PathVariable Long skuId){
         //商品详情
-        SkuDetailTo skuDetailTo =  skuDetailService.getSkuDetail(skuId);
+        SkuDetailTo skuDetailTo =  detailService.getSkuDetail(skuId);
 
+        //更新一下热度分 攒一批更新一下。 100
+        detailService.updateHotScore(skuId);
         return Result.ok(skuDetailTo);
     }
 }
