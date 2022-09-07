@@ -421,9 +421,9 @@ public class GoodsServiceImpl implements GoodsService {
 
 
         //3.1 品牌聚合 - 品牌名子聚合
-        TermsAggregationBuilder tmNameAgg = AggregationBuilders.terms("tmNameAgg").field("tmName.keyword").size(1);
+        TermsAggregationBuilder tmNameAgg = AggregationBuilders.terms("tmNameAgg").field("tmName").size(1);
         //3.2 品牌聚合 - 品牌logo子聚合
-        TermsAggregationBuilder tmLogoAgg = AggregationBuilders.terms("tmLogoAgg").field("tmLogoUrl.keyword").size(1);
+        TermsAggregationBuilder tmLogoAgg = AggregationBuilders.terms("tmLogoAgg").field("tmLogoUrl").size(1);
 
         tmIdAgg.subAggregation(tmNameAgg);
         tmIdAgg.subAggregation(tmLogoAgg);
