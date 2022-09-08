@@ -7,18 +7,24 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 /**
-* @author Awei
+* @author lfy
 * @description 针对表【base_attr_info(属性表)】的数据库操作Service
-* @createDate 2022-08-22 19:16:05
+* @createDate 2022-08-23 10:12:44
 */
 public interface BaseAttrInfoService extends IService<BaseAttrInfo> {
 
-    List<BaseAttrInfo> getAttrInfoAndValueByCategoryId(String c1Id, String c2Id, String c3Id);
-/*
-* 保存平台属性
-* */
+    /**
+     *
+     * @param c1Id  1级分类id
+     * @param c2Id  2级分类id
+     * @param c3Id  3级分类id
+     * @return
+     */
+    List<BaseAttrInfo> getAttrInfoAndValueByCategoryId(Long c1Id, Long c2Id, Long c3Id);
+
+    /**
+     * 保存平台属性
+     * @param info
+     */
     void saveAttrInfo(BaseAttrInfo info);
-
-
-
 }

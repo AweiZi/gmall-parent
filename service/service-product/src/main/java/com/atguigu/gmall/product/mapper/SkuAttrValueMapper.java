@@ -9,9 +9,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
-* @author Awei
+* @author lfy
 * @description 针对表【sku_attr_value(sku平台属性值关联表)】的数据库操作Mapper
-* @createDate 2022-08-22 19:16:04
+* @createDate 2022-08-23 10:12:44
 * @Entity com.atguigu.gmall.product.domain.SkuAttrValue
 */
 public interface SkuAttrValueMapper extends BaseMapper<SkuAttrValue> {

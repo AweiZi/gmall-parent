@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atguigu.gmall.product.mapper.BaseAttrInfoMapper">
+
     <resultMap id="BaseResultMap" type="com.atguigu.gmall.model.product.BaseAttrInfo">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="attrName" column="attr_name" jdbcType="VARCHAR"/>
@@ -12,11 +13,11 @@
 
     <sql id="Base_Column_List">
         id
-        ,
-        attr_name,
-        category_id,
+        ,attr_name,category_id,
         category_level
     </sql>
+
+
     <!--     数据库查出的每一条记录，new BaseAttrInfo()。然后把数据放到这个对象中。把这个集合返回-->
 
     <!--  id=1  new BaseAttrInfo(1,价格,61,3,
@@ -31,7 +32,7 @@
                autoMapping="true">
         <!--        用id标签区分出唯一id-->
         <id column="id" property="id"></id>
-<!--                <result column="attr_name" property="attrName"></result>-->
+        <!--        <result column="attr_name" property="attrName"></result>-->
         <!--        <result column="category_id" property="categoryId"></result>-->
         <!--        <result column="category_level" property="categoryLevel"></result>-->
         <collection
@@ -47,18 +48,18 @@
 
     <select id="getAttrInfoAndValueByCategoryId"
             resultMap="AttrInfoAndValue">
-        select bai.*, bav.id vid, bav.value_name, bav.attr_id
+        select bai.*,bav.id vid,bav.value_name,bav.attr_id
         from base_attr_info bai
         left join base_attr_value bav on bai.id = bav.attr_id
         <where>
-            <if test="c1Id!=0">
-                (bai.category_id = #{c1Id} and bai.category_level = 1)
+            <if test="c1Id != 0">
+                (bai.category_id=#{c1Id} and bai.category_level=1)
             </if>
-            <if test="c2Id!=0">
-                or (bai.category_id = #{c2Id} and bai.category_level = 2)
+            <if test="c2Id != 0">
+                or (bai.category_id=#{c2Id} and bai.category_level=2)
             </if>
-            <if test="c3Id!=0">
-                or (bai.category_id = #{c3Id} and bai.category_level = 3)
+            <if test="c3Id != 0">
+                or (bai.category_id=#{c3Id} and bai.category_level=3)
             </if>
         </where>
     </select>

@@ -1,71 +1,84 @@
 package com.atguigu.gmall.product.controller;
 
+
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.product.service.SkuInfoService;
-import com.atguigu.starter.cache.service.CacheOpsService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Sku管理
+ */
+@RequestMapping("/admin/product")
 @RestController
-@RequestMapping("admin/product")
 public class SkuController {
-    @Autowired
-    private SkuInfoService skuInfoService;
-    @Autowired
-    CacheOpsService cacheOpsService;
 
-    /*
-     *http://api.gmall.com/admin/product/list/{page}/{limit}
-     * */
-    @ApiOperation(value = "获取sku分页列表")
-    @GetMapping("list/{page}/{limit}")
-    public Result getSkuList(@PathVariable Long page,
-                             @PathVariable Long limit) {
-        Page<SkuInfo> skuInfoPage = new Page<>(page, limit);
-        Page<SkuInfo> infoPage = skuInfoService.page(skuInfoPage);
-        return Result.ok(infoPage);
+
+
+
+    @Autowired
+    SkuInfoService skuInfoService;
+
+    /**
+     * sku分页查询
+     * @return
+     */
+    @GetMapping("/list/{pn}/{ps}")
+    public Result getSkuList(@PathVariable("pn") Long pn,
+                             @PathVariable("ps") Long ps){
+        Page<SkuInfo> page =new Page<>(pn,ps);
+        Page<SkuInfo> result = skuInfoService.page(page);
+        return Result.ok(result);
     }
 
-    /*
-     * 接口	http://api.gmall.com/admin/product/saveSkuInfo
-     * */
-    @ApiOperation(value = "添加sku")
-    @PostMapping("saveSkuInfo")
-    public Result save(@RequestBody SkuInfo info) {
-        //        sku的大保存
+
+    /**
+     * 接前端的json数据，可以使用逆向方式生成vo【和前端对接的JavaBean】
+     * https://www.json.cn/json/json2java.html  根据json模型生成vo
+     *
+     *
+     * @param info
+     * @return
+     */
+    @PostMapping("/saveSkuInfo")
+    public Result saveSku(@RequestBody SkuInfo info){
+
+        //sku的大保存
         skuInfoService.saveSkuInfo(info);
 
         return Result.ok();
     }
 
-
-    /*
-     * http://api.gmall.com/admin/product/onSale/{skuId}
-     * */
-    @ApiOperation(value = "sku上架")
-    @GetMapping("/onSale/{skuId}")
-    public Result onSale(@PathVariable("skuId") Long skuId) {
-        skuInfoService.onSale(skuId);
-        return Result.ok();
-    }
-
     /**
      * 商品下架
+     * @param skuId
+     * @return
      */
     @GetMapping("/cancelSale/{skuId}")
-    public Result cancelSale(@PathVariable("skuId") Long skuId) {
+    public Result cancelSale(@PathVariable("skuId")Long skuId){
         skuInfoService.cancelSale(skuId);
         return Result.ok();
     }
 
     /**
-     * 修改sku信息
+     * 商品上架
+     * @return
      */
-    public void updateSkuInfo(SkuInfo skuInfo) {
+    @GetMapping("/onSale/{skuId}")
+    public Result onSale(@PathVariable("skuId")Long skuId){
+        skuInfoService.onSale(skuId);
+        return Result.ok();
+    }
+
+    /**
+     * 修改SKu信息
+     */
+    public void updateSkuInfo(SkuInfo skuInfo){
 //        skuInfoService.updateSkuInfo(skuInfo);
 //        cacheOpsService.delay2Delete(skuInfo.getId());
     }
+
+
 }

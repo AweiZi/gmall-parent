@@ -69,7 +69,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         //5、http://192.168.200.100:9000/gmall/filename
 
         //返回刚才上传文件的可访问路径
-        String url = minioProperties.getEndpointUrl()+"/"+minioProperties.getBucketName()+"/"+dateStr+"/"+filename;
+        String url = minioProperties.getEndpoint()+"/"+minioProperties.getBucketName()+"/"+dateStr+"/"+filename;
 
 
         //优化：

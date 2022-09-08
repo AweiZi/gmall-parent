@@ -11,10 +11,10 @@ spring:
 
 app:
   minio:
-    endpointUrl: http://192.168.6.99:9000
-    accessKey: admin
-    secreKey: admin123456
-    bucketName: gmall
+    endpoint: http://192.168.6.99:9000
+    ak: admin
+    sk: admin123456
+    bucket-name: gmall
   thread-pool:
     core: 4
     max: 8

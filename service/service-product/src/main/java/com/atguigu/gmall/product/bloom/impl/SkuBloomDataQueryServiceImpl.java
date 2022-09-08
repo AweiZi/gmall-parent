@@ -15,7 +15,6 @@ public class SkuBloomDataQueryServiceImpl implements BloomDataQueryService {
 
     @Override
     public List queryData() {
-
         return skuInfoService.findAllSkuId();
     }
 }

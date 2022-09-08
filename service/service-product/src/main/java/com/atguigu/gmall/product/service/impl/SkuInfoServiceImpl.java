@@ -1,15 +1,19 @@
 package com.atguigu.gmall.product.service.impl;
-import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.feign.search.SearchFeignClient;
-import com.atguigu.gmall.model.list.Goods;
 import com.atguigu.gmall.model.list.SearchAttr;
+import com.google.common.collect.Lists;
+import java.util.Date;
+
+import com.atguigu.gmall.common.constant.SysRedisConst;
+import com.atguigu.gmall.model.list.Goods;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
+import com.atguigu.gmall.model.to.ValueSkuJsonTo;
 import com.atguigu.gmall.product.mapper.BaseCategory3Mapper;
-import com.atguigu.gmall.product.mapper.SkuInfoMapper;
 import com.atguigu.gmall.product.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.atguigu.gmall.product.mapper.SkuInfoMapper;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +21,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
- * @author lfy
- * @description 针对表【sku_info(库存单元表)】的数据库操作Service实现
- * @createDate 2022-08-23 10:12:44
- */
+* @author lfy
+* @description 针对表【sku_info(库存单元表)】的数据库操作Service实现
+* @createDate 2022-08-23 10:12:44
+*/
 @Service
 public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
-        implements SkuInfoService{
+    implements SkuInfoService{
 
     @Autowired
     SkuImageService skuImageService;
