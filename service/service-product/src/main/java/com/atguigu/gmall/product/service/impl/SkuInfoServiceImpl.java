@@ -1,19 +1,15 @@
 package com.atguigu.gmall.product.service.impl;
-import com.atguigu.gmall.feign.search.SearchFeignClient;
-import com.atguigu.gmall.model.list.SearchAttr;
-import com.google.common.collect.Lists;
-import java.util.Date;
-
 import com.atguigu.gmall.common.constant.SysRedisConst;
+import com.atguigu.gmall.feign.search.SearchFeignClient;
 import com.atguigu.gmall.model.list.Goods;
+import com.atguigu.gmall.model.list.SearchAttr;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
-import com.atguigu.gmall.model.to.ValueSkuJsonTo;
 import com.atguigu.gmall.product.mapper.BaseCategory3Mapper;
+import com.atguigu.gmall.product.mapper.SkuInfoMapper;
 import com.atguigu.gmall.product.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.atguigu.gmall.product.mapper.SkuInfoMapper;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -144,11 +141,13 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
 
 
+
         //(√)5、商品（sku）的所有兄弟产品的销售属性名和值组合关系全部查出来，并封装成
         // {"118|120": "50","119|121": 50} 这样的json字符串
         Long spuId = skuInfo.getSpuId();
         String valuejson = spuSaleAttrService.getAllSkuSaleAttrValueJson(spuId);
         detailTo.setValuesSkuJson(valuejson);
+        System.out.println(valuejson);
         //以下不用管
         //5、商品（sku）类似推荐    （x）
         //6、商品（sku）介绍[所属的spu的海报]        spu_poster（x）

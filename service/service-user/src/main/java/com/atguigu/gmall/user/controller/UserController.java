@@ -1,5 +1,6 @@
 package com.atguigu.gmall.user.controller;
 
+
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.result.ResultCodeEnum;
 import com.atguigu.gmall.model.user.LoginSuccessVo;
@@ -35,6 +36,8 @@ public class UserController {
 
     /**
      * 退出
+     *      只要登录了，任何微服务通过这个就能获取到用户id
+     *      @RequestHeader(SysRedisConst.USERID_HEADER) String uid
      * @return
      */
     @GetMapping("/passport/logout")

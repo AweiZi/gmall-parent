@@ -1,11 +1,11 @@
 package com.atguigu.gmall.common.config.threadpool;
 
+
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "app.thread-pool")
-@Component
 @Data
 public class AppThreadPoolProperties {
 
