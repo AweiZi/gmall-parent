@@ -1,31 +1,46 @@
 package com.atguigu.gmall.cart.api;
 
 
-import com.atguigu.gmall.common.constant.SysRedisConst;
+import com.atguigu.gmall.cart.service.CartService;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.product.SkuInfo;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/inner/rpc/cart")
 @RestController
 public class CartApiController {
 
+    @Autowired
+    CartService cartService;
 
     /**
      * 把商品添加到购物车
-     * @param skuId
-     * @param num
-     * @return  把那个商品添加到了购物车
+     *
+     * @return 把那个商品添加到了购物车
      */
     @GetMapping("/addToCart")
     public Result<SkuInfo> addToCart(@RequestParam("skuId") Long skuId,
-                                     @RequestParam("num") Integer num,
-                                     @RequestHeader(value=SysRedisConst.USERID_HEADER,required = false)
-                                                 String userId){
+                                     @RequestParam("num") Integer num
+    ) {
+    //老请求RequestContextHolder 绑定在当前线程
+        SkuInfo skuInfo = cartService.addToCart(skuId, num);
 
-        System.out.println("service-cart 获取到的用户id："+userId);
-        //TODO
 
+        return Result.ok();
+    }
+
+    /**
+     * 删除购物车中选中的商品
+     * @return
+     */
+    @GetMapping("/deleteChecked")
+    public Result deleteChecked(){
+        String cartKey = cartService.determinCartKey();
+        cartService.deleteChecked(cartKey);
         return Result.ok();
     }
 }

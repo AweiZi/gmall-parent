@@ -40,9 +40,14 @@ public class CartController {
         //1、把指定商品添加到购物车
         System.out.println("web-all 获取到的用户id：");
         Result<SkuInfo> result = cartFeignClient.addToCart(skuId, skuNum);
-        model.addAttribute("skuInfo",result.getData());
-        model.addAttribute("skuNum",skuNum);
-
-        return "cart/addCart";
+        if (result.isOk()){
+            model.addAttribute("skuInfo",result.getData());
+            model.addAttribute("skuNum",skuNum);
+            return "cart/addCart";
+        }else {
+            String message = result.getMessage();
+            model.addAttribute("msg",result.getData());
+            return "cart/error";
+        }
     }
 }

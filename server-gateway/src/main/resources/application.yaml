@@ -35,6 +35,11 @@ spring:
           uri: lb://service-item
           predicates:
             - Path=/api/inner/rpc/item/**
+
+        - id: cart_router
+          uri: lb://service-cart
+          predicates:
+            - Path=/api/cart/**
         - id: web_all_route  # 以 **.gmall.com开头的所有请求都lb(loadbalancer)转给web-all
           uri: lb://web-all
           predicates:

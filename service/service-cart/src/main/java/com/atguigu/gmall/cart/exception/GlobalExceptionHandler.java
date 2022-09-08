@@ -1,0 +1,30 @@
+package com.atguigu.gmall.cart.exception;
+
+import com.atguigu.gmall.common.execption.GmallException;
+import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.common.result.ResultCodeEnum;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+//@ControllerAdvice
+//@ResponseBody
+//@RestControllerAdvice
+public class GlobalExceptionHandler {
+    /**
+     * 业务期间出现的所有异常都用 GmallException 包装
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(GmallException.class)
+    public Result handleGmallException(GmallException e){
+        //业务状态的枚举类
+        ResultCodeEnum codeEnum = e.getCodeEnum();
+        Result<String> result = Result.build("", codeEnum);
+
+        return result;
+    }
+    @ExceptionHandler(NullPointerException.class)
+    public String handlenullException(NullPointerException gmallException){
+
+        return "haha";  //给前端的返回
+    }
+}
