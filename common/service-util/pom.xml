@@ -22,6 +22,11 @@
             <artifactId>common-util</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.atguigu.gmall</groupId>
+            <artifactId>model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- redis -->
         <dependency>
@@ -57,5 +62,4 @@
         </dependency>
 
     </dependencies>
-
 </project>

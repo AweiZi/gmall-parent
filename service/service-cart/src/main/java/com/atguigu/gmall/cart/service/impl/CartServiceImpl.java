@@ -13,13 +13,15 @@ import com.atguigu.gmall.model.vo.user.UserAuthInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
+@Service
 public class CartServiceImpl implements CartService {
     @Autowired
     StringRedisTemplate redisTemplate;
@@ -35,8 +37,16 @@ public class CartServiceImpl implements CartService {
 
         //2.给购物车添加指定商品
         SkuInfo skuInfo = addItemToCart(skuId, num, cartKey);
+        //3、购物车超时设置。 自动延期。
+        UserAuthInfo authInfo = AuthUtils.getCurrentAuthInfo();
+        if(authInfo.getUserId() == null){
+            //用户未登录状态一直操作临时购物车
+            String tempKey = SysRedisConst.CART_KEY + authInfo.getUserTempId();
+            //临时购物车都有过期时间，自动延期
+            redisTemplate.expire(tempKey,90, TimeUnit.DAYS);
+        }
 
-        return null;
+        return skuInfo;
     }
 
     @Override
