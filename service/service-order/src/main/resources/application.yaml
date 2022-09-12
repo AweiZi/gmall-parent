@@ -1,10 +1,10 @@
 server:
-  port: 13000
+  port: 14000
 spring:
   profiles:
     include: sharding
   datasource:
-    url: jdbc:mysql://192.168.200.100:3306/gmall_order?useSSL=false
+    url: jdbc:mysql://192.168.6.99:3306/gmall_order?useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: 123456
