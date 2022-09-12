@@ -1,0 +1,11 @@
+server:
+  port: 13000
+spring:
+  profiles:
+    include: sharding
+  datasource:
+    url: jdbc:mysql://192.168.200.100:3306/gmall_order?useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    type: com.zaxxer.hikari.util.DriverDataSource
