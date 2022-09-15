@@ -1,9 +1,10 @@
 package com.atguigu.gmall.web.controller;
 
 
+import com.atguigu.gmall.common.auth.AuthUtils;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.feign.cart.CartFeignClient;
-import com.atguigu.gmall.model.product.SkuInfo;
+import com.atguigu.gmall.model.vo.user.UserAuthInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +40,13 @@ public class CartController {
 
         //1、把指定商品添加到购物车
         System.out.println("web-all 获取到的用户id：");
-        Result<SkuInfo> result = cartFeignClient.addToCart(skuId, skuNum);
+        Result<Object> result = cartFeignClient.addToCart(skuId, skuNum);
+
+        UserAuthInfo info = AuthUtils.getCurrentAuthInfo();
+        System.out.println("info.getUserId() = " + info.getUserId());
+        System.out.println("info.getUserId() = " + info.getUserTempId());
+
+
         if (result.isOk()){
             model.addAttribute("skuInfo",result.getData());
             model.addAttribute("skuNum",skuNum);

@@ -10,25 +10,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@Controller
+//@RestController //返回值会被服务器直接写给浏览器。 前后分离开发
+//  浏览器。  ajax <==数据交互==> 服务器
+
+
+// 浏览器。   search?xxx <====模板引擎找到页面地址,把页面数据写给浏览器==> 服务器
+@Controller //返回值会被服务器认为是一个页面跳转地址，前后不分离开发
 public class IndexController {
+
+
     @Autowired
     CategoryFeignClient categoryFeignClient;
-
     /**
-     * 跳转首页
+     * 跳到首页
      * @return
      */
-    @GetMapping({"/index","/"})
-    public String indexPage(Model model){
-//       远程查询所有菜单并封装成树形结构的模型
-        Result<List<CategoryTreeTo>> result = categoryFeignClient.getAllCategoryWithTree();
-        if (result.isOk()){
-//            远程成功
+    @GetMapping({"/", "/index","/index.html"})
+    public String indexPage(Model model) {
+
+
+        //远程查询出所有菜单。封装成一个树形结构的模型
+        Result<List<CategoryTreeTo>> result = categoryFeignClient
+                .getAllCategoryWithTree();
+
+        if(result.isOk()){
+            //远程成功。 强类型语言
             List<CategoryTreeTo> data = result.getData();
             model.addAttribute("list",data);
         }
-
-        return "index/index.html";//页面的逻辑视图名
+        //  classpath:/templates/index/index.html
+        return "index/index";//页面的逻辑视图名
     }
 }

@@ -1,17 +1,19 @@
 package com.atguigu.starter.cache.service;
 
+
 import java.lang.reflect.Type;
 
 public interface CacheOpsService {
 
     /**
-     * 从缓存中获取一个数据并转为普通对象
+     * 从缓存中获取一个json并转为普通对象
      * @param cacheKey
      * @param clz
      * @param <T>
      * @return
      */
-    <T>T getCacheData(String cacheKey, Class<T> clz);
+    <T>T getCacheData(String cacheKey,
+                             Class<T> clz);
 
     /**
      * 从缓存中获取一个json并转为复杂对象
@@ -19,14 +21,15 @@ public interface CacheOpsService {
      * @param type
      * @return
      */
-    Object getCacheData(String cacheKey, Type type);
-
+    Object getCacheData(String cacheKey,
+                        Type type);
 
     /**
      * 延迟双删
      * @param cacheKey
      */
     void delay2Delete(String cacheKey);
+
 
     /**
      * 布隆过滤器判断是否有这个商品
@@ -36,7 +39,7 @@ public interface CacheOpsService {
     boolean bloomContains(Object skuId);
 
     /**
-     * 判定指定布隆bloomName是否包含指定值bVal
+     * 判定指定布隆过滤器（bloomName） 是否 包含 指定值（bVal）
      * @param bloomName
      * @param bVal
      * @return
@@ -51,7 +54,7 @@ public interface CacheOpsService {
     boolean tryLock(Long skuId);
 
     /**
-     *加指定的分布式锁
+     * 加指定的分布式锁
      * @param lockName
      * @return
      */
@@ -62,26 +65,26 @@ public interface CacheOpsService {
      * @param cacheKey
      * @param fromRpc
      */
-    void saveData(String cacheKey,Object fromRpc);
+    void saveData(String cacheKey, Object fromRpc);
 
     /**
-     * 以秒计
+     * 以秒
      * @param cacheKey
      * @param fromRpc
      * @param dataTtl
      */
-    void saveData(String cacheKey,Object fromRpc,Long dataTtl);
+    void saveData(String cacheKey, Object fromRpc,Long dataTtl);
 
     /**
      * 解锁
      * @param skuId
      */
-    void unLock(Long skuId);
+    void unlock(Long skuId);
+
 
     /**
      * 解指定的锁
      * @param lockName
      */
-    void unLock(String lockName);
-
+    void unlock(String lockName);
 }

@@ -1,23 +1,16 @@
 package com.atguigu.gmall.web.config;
 
 
-import com.atguigu.gmall.common.constant.SysRedisConst;
-import feign.RequestInterceptor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 public class WebAllConfiguration {
 
-
-    /**
+/*
+    *//**
      * 把用户id带到feign即将发起的新请求中
      * @return
-     */
+     *//*
     @Bean
     public RequestInterceptor userHeaderInterceptor(){
 
@@ -43,6 +36,6 @@ public class WebAllConfiguration {
             template.header(SysRedisConst.USERTEMPID_HEADER,tempId);
 
         };
-    }
+    }*/
 
 }

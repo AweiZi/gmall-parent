@@ -14,6 +14,7 @@ public class GmallException extends RuntimeException {
 
     @ApiModelProperty(value = "异常状态码")
     private Integer code;
+
     private ResultCodeEnum codeEnum;
 
     /**
@@ -34,7 +35,6 @@ public class GmallException extends RuntimeException {
         super(resultCodeEnum.getMessage());
         this.code = resultCodeEnum.getCode();
         this.codeEnum = resultCodeEnum;
-
     }
 
     @Override

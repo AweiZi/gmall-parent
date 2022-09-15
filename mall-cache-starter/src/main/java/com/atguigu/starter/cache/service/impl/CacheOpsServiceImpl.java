@@ -18,49 +18,52 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 封装缓存操作
+ * 封装了缓存操作
  */
 @Service
 public class CacheOpsServiceImpl implements CacheOpsService {
+
 
     @Autowired
     StringRedisTemplate redisTemplate;
 
     @Autowired
     RedissonClient redissonClient;
+
     //专门执行延迟任务的线程池
     ScheduledExecutorService scheduledExecutor = Executors.newScheduledThreadPool(4);
 
-
     /**
-     * 从缓存中获取一个数据，并转换成指定类型的对象
+     * 从缓存中获取一个数据，并转成指定类型的对象
+     * @param cacheKey
+     * @param clz
+     * @param <T>
+     * @return
      */
     @Override
     public <T> T getCacheData(String cacheKey, Class<T> clz) {
         String jsonStr = redisTemplate.opsForValue().get(cacheKey);
-
-        //引入null值缓存机制
-        if (SysRedisConst.NULL_VAL.equals(jsonStr)) {
+        //引入null值缓存机制。
+        if(SysRedisConst.NULL_VAL.equals(jsonStr)){
             return null;
         }
         T t = Jsons.toObj(jsonStr, clz);
         return t;
     }
 
-
     @Override
     public Object getCacheData(String cacheKey, Type type) {
         String jsonStr = redisTemplate.opsForValue().get(cacheKey);
-
-        //引入null值缓存机制
-        if (SysRedisConst.NULL_VAL.equals(jsonStr)) {
+        //引入null值缓存机制。
+        if(SysRedisConst.NULL_VAL.equals(jsonStr)){
             return null;
         }
-        //逆转json为 type类型的复杂对象
+
+        //逆转json为Type类型的复杂对象
         Object obj = Jsons.toObj(jsonStr, new TypeReference<Object>() {
             @Override
             public Type getType() {
-                return type;//这个是方法带泛型的返回值
+                return type; //这个是方法的带泛型的返回值类型
             }
         });
         return obj;
@@ -69,8 +72,9 @@ public class CacheOpsServiceImpl implements CacheOpsService {
     @Override
     public void delay2Delete(String cacheKey) {
         redisTemplate.delete(cacheKey);
-        //1.提交一个延迟任务，断电失效，结合后台管理系统，专门准备清空缓存的按钮功能
-        //2.分布式池框架，Redisson 感兴趣分布式异步任务的，找redisson api
+
+        //1、提交一个延迟任务。 断电失效。 结合后台管理系统，专门准备清空缓存的按钮功能
+        //2、分布式池框架。Redisson。感兴趣分布式异步任务的，找redisson api
         scheduledExecutor.schedule(()->{
             redisTemplate.delete(cacheKey);
         },5,TimeUnit.SECONDS);
@@ -79,41 +83,45 @@ public class CacheOpsServiceImpl implements CacheOpsService {
     @Override
     public boolean bloomContains(Object skuId) {
         RBloomFilter<Object> filter = redissonClient.getBloomFilter(SysRedisConst.BLOOM_SKUID);
-        boolean contains = filter.contains(skuId);
-        return contains;
+        return filter.contains(skuId);
     }
 
     @Override
     public boolean bloomContains(String bloomName, Object bVal) {
-        RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(bloomName);
-        return bloomFilter.contains(bVal);
-
+        RBloomFilter<Object> filter = redissonClient.getBloomFilter(bloomName);
+        return filter.contains(bVal);
     }
+
     @Override
     public boolean tryLock(Long skuId) {
-        //1.准备锁用的key lock:sku:detail:50
-        String lockKey = SysRedisConst.LOCK_SKU_DETAIL + skuId;
+        //1、准备锁用的key    lock:sku:detail:50
+        String lockKey = SysRedisConst.LOCK_SKU_DETAIL+skuId;
         RLock lock = redissonClient.getLock(lockKey);
-        //2.尝试加锁
+        //2、尝试加锁
         boolean tryLock = lock.tryLock();
         return tryLock;
     }
+
     @Override
     public boolean tryLock(String lockName) {
-        //1.准备锁用的key lock:sku:detail:50
-        RLock lock = redissonClient.getLock(lockName);
-        //2.尝试加锁
-        boolean tryLock = lock.tryLock();
-        return tryLock;
+        RLock rLock = redissonClient.getLock(lockName);
+        return rLock.tryLock();
     }
 
     @Override
     public void saveData(String cacheKey, Object fromRpc) {
-        if (fromRpc == null) {
-            redisTemplate.opsForValue().set(cacheKey, SysRedisConst.NULL_VAL, SysRedisConst.NULL_VAL_TTL, TimeUnit.SECONDS);
-        } else {
+        if(fromRpc == null){
+            //null值缓存短一点时间
+            redisTemplate.opsForValue().set(cacheKey,
+                    SysRedisConst.NULL_VAL,
+                    SysRedisConst.NULL_VAL_TTL,
+                    TimeUnit.SECONDS);
+        }else {
             String str = Jsons.toStr(fromRpc);
-            redisTemplate.opsForValue().set(cacheKey, str, SysRedisConst.SKUDETAIL_TTL, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(cacheKey,
+                    str,
+                    SysRedisConst.SKUDETAIL_TTL,
+                    TimeUnit.SECONDS);
         }
     }
 
@@ -135,17 +143,17 @@ public class CacheOpsServiceImpl implements CacheOpsService {
     }
 
     @Override
-    public void unLock(Long skuId) {
-        String lockKey = SysRedisConst.LOCK_SKU_DETAIL + skuId;
+    public void unlock(Long skuId) {
+        String lockKey = SysRedisConst.LOCK_SKU_DETAIL+skuId;
         RLock lock = redissonClient.getLock(lockKey);
-        //解锁
+
+        //解掉这把锁
         lock.unlock();
     }
-    @Override
-    public void unLock(String lockName) {
 
+    @Override
+    public void unlock(String lockName) {
         RLock lock = redissonClient.getLock(lockName);
-        //解锁
-        lock.unlock();//redis已经防止删除别人的锁
+        lock.unlock(); //redisson已经防止了删别人锁
     }
 }

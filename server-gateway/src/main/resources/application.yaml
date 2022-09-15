@@ -18,32 +18,49 @@ spring:
 
      #      所有网关路由规则
       routes:
-        - id: product_route # 以 /admin/product 开头的所有请求都lb(loadbalancer)转给service-product
-          uri: lb://service-product
-          predicates: #断言
-            - Path=/admin/product/**
         - id: activity_route # 以 /admin/activity 开头的所有请求都lb(loadbalancer)转给service-activity
           uri: lb://service-activity
           predicates:
             - Path=/admin/activity/**
 
+
+
+
+
+        - id: product_route # 以 /admin/product 开头的所有请求都lb(loadbalancer)转给service-product
+          uri: lb://service-product
+          predicates:  #断言
+            - Path=/admin/product/**
+
+
+        - id: incr_route
+          uri: lb://service-item
+          predicates:
+            - Path=/lock/incr
+
         - id: user_route
           uri: lb://service-user
           predicates:
-              - Path=/api/user/**
-        - id: item_route # 以 /admin/activity 开头的所有请求都lb(loadbalancer)转给service-activity
-          uri: lb://service-item
-          predicates:
-            - Path=/api/inner/rpc/item/**
+            - Path=/api/user/**
 
         - id: cart_router
           uri: lb://service-cart
           predicates:
             - Path=/api/cart/**
-        - id: web_all_route  # 以 **.gmall.com开头的所有请求都lb(loadbalancer)转给web-all
+
+        - id: order_router
+          uri: lb://service-order
+          predicates:
+            - Path=/api/order/**
+
+        - id: web_all_route
           uri: lb://web-all
           predicates:
             - Host=**.gmall.com
+
+
+
+
 
 app:
   auth:
@@ -56,6 +73,7 @@ app:
 
     login-auth-url: #登录以后才能访问的资源
       - /order/**
+      - /trade.html
     deny-url:
       - /api/inner/**
 

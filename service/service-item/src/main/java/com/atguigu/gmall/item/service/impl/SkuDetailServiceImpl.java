@@ -231,7 +231,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
                 //8、数据放缓存
                 cacheOpsService.saveData(cacheKey,fromRpc);
                 //9、解锁
-                cacheOpsService.unLock(skuId);
+                cacheOpsService.unlock(skuId);
                 return fromRpc;
             }
             //9、没获取到锁

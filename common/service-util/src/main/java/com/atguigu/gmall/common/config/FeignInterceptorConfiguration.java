@@ -1,5 +1,6 @@
 package com.atguigu.gmall.common.config;
 
+
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -11,28 +12,30 @@ import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 public class FeignInterceptorConfiguration {
+
     /**
      * 把用户id带到feign即将发起的新请求中
+     * @return
      */
     @Bean
     public RequestInterceptor userHeaderInterceptor(){
-        return (template)->{
+
+        return (template)-> {
             //修改请求模板
-            System.out.println("真帅气啊");
-            //即时调用，获取老请求
-            //获取当前线程
+            System.out.println("哈哈");
+            //随时调用，获取老请求。
+            //
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            //获取老请求的请求头
             HttpServletRequest request = attributes.getRequest();
-            //得到老用户的用户id
             String userId = request.getHeader(SysRedisConst.USERID_HEADER);
-            //将用户id添加到feign的新请求中
+            //用户id头添加到feign的新情求中
             template.header(SysRedisConst.USERID_HEADER,userId);
+
 
             //临时id也透传
             String tempId = request.getHeader(SysRedisConst.USERTEMPID_HEADER);
+            template.header(SysRedisConst.USERTEMPID_HEADER,tempId);
 
-            template.header(SysRedisConst.USERID_HEADER,tempId);
         };
     }
 }

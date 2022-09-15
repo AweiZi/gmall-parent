@@ -13,6 +13,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
 /**
  * redis中一个skuId  hash对应的value就是 CartInfo 转为json字符
  */
@@ -29,20 +30,16 @@ public class CartInfo extends BaseEntity {
     @TableField("sku_id")
     private Long skuId;
 
-    @ApiModelProperty(value = "放入购物车时价格")
-    @TableField("cart_price")
-    private BigDecimal cartPrice;//第一次放入购物车的价格
-
     @ApiModelProperty(value = "数量")
     @TableField("sku_num")
     private Integer skuNum;
+
     public void setSkuNum(Integer skuNum) {
         if(skuNum > SysRedisConst.CART_ITEM_NUM_LIMIT){
             throw new GmallException(ResultCodeEnum.CART_ITEM_SKUNUM_OVERFLOW);
         }
         this.skuNum = skuNum;
     }
-
 
     @ApiModelProperty(value = "图片文件")
     @TableField("img_url")
@@ -68,11 +65,16 @@ public class CartInfo extends BaseEntity {
     @TableField(exist = false)
     BigDecimal skuPrice;
 
+    @ApiModelProperty(value = "放入购物车时价格")
+    @TableField("cart_price")
+    private BigDecimal cartPrice;
+    //第一次放入购物车时的价格
+
+
+
     //  优惠券信息列表
     @ApiModelProperty(value = "购物项对应的优惠券信息")
     @TableField(exist = false)
     private List<CouponInfo> couponInfoList;
-
-
 
 }

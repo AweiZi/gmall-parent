@@ -1,5 +1,6 @@
 package com.atguigu.starter.cache;
 
+
 import com.atguigu.starter.cache.aspect.CacheAspect;
 import com.atguigu.starter.cache.service.CacheOpsService;
 import com.atguigu.starter.cache.service.impl.CacheOpsServiceImpl;
@@ -14,35 +15,47 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-@EnableAspectJAutoProxy//开启aop
+
+/**
+ * 以前容器中的所有组件要导入进去
+ * 整个缓存场景涉及到的所有组件都得注入到容器中
+ */
+//@Import(CacheAspect.class)
+@EnableAspectJAutoProxy
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-@Configuration//以前容器中的所有组件要导入进去 整个换存场景都得注入到容器
+@Configuration
 public class MallCacheAutoConfiguration {
+
+
     @Autowired
     RedisProperties redisProperties;
+
     @Bean
     public CacheAspect cacheAspect(){
         return new CacheAspect();
     }
+
     @Bean
     public CacheOpsService cacheOpsService(){
         return new CacheOpsServiceImpl();
     }
 
-
     @Bean
     public RedissonClient redissonClient(){
-        //1.创建一个配置
+        //1、创建一个配置
         Config config = new Config();
         String host = redisProperties.getHost();
         int port = redisProperties.getPort();
         String password = redisProperties.getPassword();
-        //2.指定好redisson的配置项
+        //2、指定好redisson的配置项
         config.useSingleServer()
                 .setAddress("redis://"+host+":"+port)
                 .setPassword(password);
-        //3.创建一个RedissonClient
+
+        //3、创建一个 RedissonClient
         RedissonClient client = Redisson.create(config);
+        //Redis url should start with redis:// or rediss:// (for SSL connection)
+
         return client;
     }
 }

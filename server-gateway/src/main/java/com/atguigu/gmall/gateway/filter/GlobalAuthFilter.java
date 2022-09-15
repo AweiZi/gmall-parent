@@ -19,7 +19,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 /**
  * Webflux：响应式web编程【消息队列分布式】
@@ -181,7 +184,7 @@ public class GlobalAuthFilter implements GlobalFilter {
         String userTempId = getUserTempId(exchange);
         newReqbuilder.header(SysRedisConst.USERTEMPID_HEADER,userTempId);
 
-        //放行的时候传改掉的exchange
+        //放行的时候传改掉的exchangef
         ServerWebExchange webExchange = exchange
                 .mutate()
                 .request(newReqbuilder.build())
@@ -277,4 +280,51 @@ public class GlobalAuthFilter implements GlobalFilter {
 
         return tokenValue;
     }
+
+
+    /**
+     * StreamAPI
+     */
+    public void haha(String[] args) throws InterruptedException
+    {
+        //        //1、集合
+        //        List<Integer> integers = Arrays.asList(1,2,3,4);
+        //        //2、每个元素加2
+        //        Integer integer = integers.stream()
+        //                .map((t) -> t + 2)
+        //                .reduce((a, b) -> a + b)
+        //                .get();
+        //        System.out.println(integer);
+
+        //1、数据流。 数据发布者
+        //        Mono<Integer> just = Mono.just(1);
+        System.out.println("我的线程："+Thread.currentThread());
+        Flux<Long> flux = Flux.interval(Duration.ofSeconds(1));
+
+        //2、数据订阅者，感兴趣发布者的数据
+        flux.subscribe((t) -> {
+            System.out.println("消费者1：" + t + ":"+Thread.currentThread());
+
+        });
+
+
+        flux.subscribe((t) -> {
+            System.out.println("消费者2：" + t +":"+Thread.currentThread());
+        });
+
+
+        flux.subscribe((t) -> {
+            System.out.println("消费者3：" + t +":"+Thread.currentThread());
+        });
+
+        //        //js 的回调机制
+        //        Mono<Person> person = getPerson();
+        Thread.sleep(10000000L);
+        //
+        //        person.subscribe((t)->{
+        //            //拿到数据做业务
+        //        });
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.atguigu.gmall.model.enums;
 
+//OrderStatus更细粒度的状态，用于记录订单状态的变化日志
 public enum ProcessStatus {
     UNPAID("未支付", OrderStatus.UNPAID),
     PAID("已支付", OrderStatus.PAID),
