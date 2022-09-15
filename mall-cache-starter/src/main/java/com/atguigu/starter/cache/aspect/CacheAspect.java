@@ -63,13 +63,18 @@ public class CacheAspect {
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = null;
 
-        //key不同方法可能不一样
+        //key不同方法可能不一样 根据当前整个连接点的执行信息，确定缓存用什么key
         String cacheKey = determinCacheKey(joinPoint);
 
-        //1、先查缓存
-        // OrderInfo getOrderInfo(Long orderId);
-        // Map<String,OrderInfo> getOrderInfo();
+//        //1、先查缓存
+//         OrderInfo getOrderInfo(Long orderId);
+//         Map<String,OrderInfo> getOrderInfo();
+
+        //查询返回值类型
         Type returnType = getMethodGenericReturnType(joinPoint);
+
+
+//        从缓存中获取一个json并转为复杂对象
         Object cacheData = cacheOpsService.getCacheData(cacheKey,returnType);
 
         //2、缓存
@@ -77,6 +82,8 @@ public class CacheAspect {
             //3、准备回源
             //4、先问布隆。 有些场景并不一定需要布隆。比如：三级分类（只有一个大数据）
 //            boolean contains = cacheOpsService.bloomContains(arg);
+
+            //获取布隆名字
             String bloomName = determinBloomName(joinPoint);
             if(!StringUtils.isEmpty(bloomName)){
                 //指定开启了布隆
@@ -97,7 +104,7 @@ public class CacheAspect {
                 lock = cacheOpsService.tryLock(lockName); //49
                 if(lock){
 
-                    //6、获取到锁，开始回源
+                    //6、获取到锁，开始回源  目标方法
                     result = joinPoint.proceed(joinPoint.getArgs());
                     long ttl = determinTtl(joinPoint);
                     //7、调用成功，重新保存到缓存
@@ -187,6 +194,8 @@ public class CacheAspect {
      * @return
      */
     private String determinBloomName(ProceedingJoinPoint joinPoint) {
+
+
         //1、拿到目标方法上的@GmallCache注解
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 

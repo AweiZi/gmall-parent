@@ -39,7 +39,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
      * 缺点：
      *   1、100w的数据内存够不够
      */
-//    private Map<Long,SkuDetailTo> skuCache = new ConcurrentHashMap<>();
+    //    private Map<Long,SkuDetailTo> skuCache = new ConcurrentHashMap<>();
 
 
     /**
@@ -102,7 +102,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
         //以前   一次远程超级调用【网络交互比较浪费时间】  查出所有数据直接给我们返回
         // 一次远程用 2s
-//        CountDownLatch downLatch = new CountDownLatch(6);
+        //        CountDownLatch downLatch = new CountDownLatch(6);
 
         // 6次远程调用 6s + 0.5*6 = 9s
 
@@ -236,7 +236,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
             }
             //9、没获取到锁
             try {Thread.sleep(1000);
-               return cacheOpsService.getCacheData(cacheKey,SkuDetailTo.class);
+                return cacheOpsService.getCacheData(cacheKey,SkuDetailTo.class);
             } catch (InterruptedException e) {
 
             }
@@ -246,31 +246,31 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     }
 
     //    void redisLock(){
-//        //每个请求都会生成一个唯一令牌
-//        String token = UUID.randomUUID().toString();
-//        //1、加锁。锁的key只要不变就是同一把锁。锁的值，每个线程用自己的唯一值
-//        boolean b =  setnxex("lock",token,60s);
-//        //2、判断
-//        if(b){
-////            //3、加上过期时间
-////            setexpire("lock",10s);
-//            //4、超长业务，业务期间可能断电。即使断电，redis自动解锁
-//
-//            //5、解锁
-//            String v = redisget("lock");
-//            if(token.equals(v)){ //说明就是我的锁
-//                del("lock"); //依然可能删掉别人的锁
-//            }
-//            else {
-//                //不是你的锁。不要动
-//            }
-//        }else {
-//            //睡眠等1s，只查缓存
-//        }
-//
-//    }
+    //        //每个请求都会生成一个唯一令牌
+    //        String token = UUID.randomUUID().toString();
+    //        //1、加锁。锁的key只要不变就是同一把锁。锁的值，每个线程用自己的唯一值
+    //        boolean b =  setnxex("lock",token,60s);
+    //        //2、判断
+    //        if(b){
+    ////            //3、加上过期时间
+    ////            setexpire("lock",10s);
+    //            //4、超长业务，业务期间可能断电。即使断电，redis自动解锁
+    //
+    //            //5、解锁
+    //            String v = redisget("lock");
+    //            if(token.equals(v)){ //说明就是我的锁
+    //                del("lock"); //依然可能删掉别人的锁
+    //            }
+    //            else {
+    //                //不是你的锁。不要动
+    //            }
+    //        }else {
+    //            //睡眠等1s，只查缓存
+    //        }
+    //
+    //    }
 
-      //500w  100w：49  100w：50  100w：51   100w: 52    100w: 53
+    //500w  100w：49  100w：50  100w：51   100w: 52    100w: 53
     public SkuDetailTo getSkuDetailXxxxFeature(Long skuId) {
         lockPool.put(skuId,new ReentrantLock());
         //每个不同的sku，用自己专用的锁
@@ -285,27 +285,27 @@ public class SkuDetailServiceImpl implements SkuDetailService {
             //2、redis没有缓存数据
             //2.1、回源。之前可以判断redis中保存的sku的id集合，有没有这个id
             //防止随机值穿透攻击？ 回源之前，先要用布隆/bitmap判断有没有
-//            int result = getbit(49);
+            //            int result = getbit(49);
             // TODO 加锁解决击穿
             SkuDetailTo fromRpc = null;
 
             //JVM 抢不到锁的等1s。 怎么判断synchronized 抢到还是没抢到？
 
-//            ReentrantLock lock = new ReentrantLock();  //锁不住
+            //            ReentrantLock lock = new ReentrantLock();  //锁不住
 
-//            lock.lock(); //等锁，必须等到锁
+            //            lock.lock(); //等锁，必须等到锁
             //判断锁池中是否有自己的锁
             //锁池中不存在就放一把新的锁，作为自己的锁，存在就用之前的锁
             ReentrantLock lock = lockPool.putIfAbsent(skuId, new ReentrantLock());
 
             boolean b = this.lock.tryLock(); //立即尝试加锁，不用等，瞬发。等待逻辑在业务上 .抢一下，不成就不用再抢了
-//            boolean b = lock.tryLock(1, TimeUnit.SECONDS); //等待逻辑在锁上.1s内，CPU疯狂抢锁
+            //            boolean b = lock.tryLock(1, TimeUnit.SECONDS); //等待逻辑在锁上.1s内，CPU疯狂抢锁
             if(b){
                 //抢到锁
                 fromRpc = getSkuDetailFromRpc(skuId);
             }else {
                 //没抢到
-//                Thread.sleep(1000);
+                //                Thread.sleep(1000);
                 jsonStr = redisTemplate.opsForValue().get("sku:info:" + skuId);
                 //逆转为 SkuDetailTo
                 return null;
@@ -334,23 +334,23 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
 
 
-//    @Override  //使用本地缓存
-//    public SkuDetailTo getSkuDetail(Long skuId) {
-//
-//        //1、先看缓存
-//        SkuDetailTo cacheData = skuCache.get(skuId);
-//        //2、判断
-//        if(cacheData == null){
-//            //3、缓存没有，真正查询【回源（回到数据源头真正检索）】【提高缓存的命中率】
-//            // 1 - 0/1： 0%
-//            // 2 - 1/2: 50%
-//            // N - (N-1)/N： 无限接近100%
-//            //缓存命中率提升到100%；预缓存机制；
-//            SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
-//            skuCache.put(skuId,fromRpc);
-//            return fromRpc;
-//        }
-//        //4、缓存有
-//        return cacheData;
-//    }
+    //    @Override  //使用本地缓存
+    //    public SkuDetailTo getSkuDetail(Long skuId) {
+    //
+    //        //1、先看缓存
+    //        SkuDetailTo cacheData = skuCache.get(skuId);
+    //        //2、判断
+    //        if(cacheData == null){
+    //            //3、缓存没有，真正查询【回源（回到数据源头真正检索）】【提高缓存的命中率】
+    //            // 1 - 0/1： 0%
+    //            // 2 - 1/2: 50%
+    //            // N - (N-1)/N： 无限接近100%
+    //            //缓存命中率提升到100%；预缓存机制；
+    //            SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
+    //            skuCache.put(skuId,fromRpc);
+    //            return fromRpc;
+    //        }
+    //        //4、缓存有
+    //        return cacheData;
+    //    }
 }
