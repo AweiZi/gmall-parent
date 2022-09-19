@@ -15,7 +15,11 @@ import java.util.List;
 */
 public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
 
-    void updateOrderStatus(@Param("orderId") Long orderId, @Param("userId") Long userId, @Param("processStatus") String processStatus, @Param("orderStatus") String orderStatus, @Param("expects") List<String> expects);
+    void updateOrderStatus(@Param("orderId") Long orderId,
+                           @Param("userId") Long userId,
+                           @Param("processStatus") String processStatus,
+                           @Param("orderStatus") String orderStatus,
+                           @Param("expects") List<String> expects);
 }
 
 

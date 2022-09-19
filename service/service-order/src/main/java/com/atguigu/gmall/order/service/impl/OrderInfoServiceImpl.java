@@ -13,6 +13,7 @@ import com.atguigu.gmall.model.vo.order.OrderSubmitVo;
 import com.atguigu.gmall.order.mapper.OrderInfoMapper;
 import com.atguigu.gmall.order.service.OrderDetailService;
 import com.atguigu.gmall.order.service.OrderInfoService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,25 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         //幂等修改订单
         orderInfoMapper.updateOrderStatus(orderId,userId,processStatus,orderStatus,expects);
 
+    }
+
+    @Override
+    public OrderInfo getOrderInfoByOutTradeNoAndUserId(String outTradeNo, Long userId) {
+
+        OrderInfo info = orderInfoMapper.selectOne(new LambdaQueryWrapper<OrderInfo>()
+                .eq(OrderInfo::getUserId, userId)
+                .eq(OrderInfo::getOutTradeNo, outTradeNo));
+        return info;
+    }
+
+    @Override
+    public OrderInfo getOrderInfoByOrderIdAndUserId(Long orderId, Long userId) {
+
+        OrderInfo info = orderInfoMapper.selectOne(new LambdaQueryWrapper<OrderInfo>()
+                .eq(OrderInfo::getUserId, userId)
+                .eq(OrderInfo::getId, orderId));
+
+        return info;
     }
 
     /**

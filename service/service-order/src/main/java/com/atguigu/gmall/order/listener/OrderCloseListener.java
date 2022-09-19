@@ -5,6 +5,7 @@ import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.constant.MqConst;
 import com.atguigu.gmall.model.to.mq.OrderMsg;
 import com.atguigu.gmall.order.biz.OrderBizService;
+import com.atguigu.gmall.service.RabbitService;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -28,6 +29,9 @@ public class OrderCloseListener {
     @Autowired
     OrderBizService orderBizService;
 
+    @Autowired
+    RabbitService rabbitService;
+
     @RabbitListener(queues = MqConst.QUEUE_ORDER_DEAD)
     public void orderClose(Message message, Channel channel) throws IOException {
         long tag = message.getMessageProperties().getDeliveryTag();
@@ -41,14 +45,9 @@ public class OrderCloseListener {
             channel.basicAck(tag,false);
         }catch (Exception e){
             log.error("订单关闭业务失败。消息：{}，失败原因：{}",orderMsg,e);
-            //lua脚本
-            Long aLong = redisTemplate.opsForValue().increment(SysRedisConst.MQ_RETRY + "order:" + orderMsg.getOrderId());
-            if(aLong <= 10){
-                channel.basicNack(tag,false,true);
-            }else {
-                channel.basicNack(tag,false,false); //不入队
-                redisTemplate.delete(SysRedisConst.MQ_RETRY + "order:" + orderMsg.getOrderId());
-            }
+            String unqKey = SysRedisConst.MQ_RETRY + "order:" + orderMsg.getOrderId();
+
+            rabbitService.retryConsumMsg(10l,unqKey,tag,channel);
         }
 
 

@@ -5,7 +5,6 @@ import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.product.service.FileUploadService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.bouncycastle.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +40,7 @@ public class FileuploadController {
      * @PathVariable: 接路径上的动态变量
      * @RequestHeader: 获取浏览器发送的请求的请求头中的某些值
      * @CookieValue： 获取浏览器发送的请求的Cookie值
-     * - 如果多个就写数据，否则就写单个对象
+     * - 如果多个就写数组，否则就写单个对象
      *
      *
      * @return

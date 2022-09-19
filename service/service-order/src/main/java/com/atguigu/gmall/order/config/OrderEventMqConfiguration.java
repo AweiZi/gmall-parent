@@ -26,7 +26,7 @@ public class OrderEventMqConfiguration {
      * @return
      */
     @Bean
-    public Exchange orderEventExchange(){
+    public Exchange orderEventExchange() {
         /**
          * String name,
          * boolean durable,
@@ -37,7 +37,7 @@ public class OrderEventMqConfiguration {
                 MqConst.EXCHANGE_ORDER_EVNT,
                 true,
                 false
-                );
+        );
 
         return exchange;
     }
@@ -47,7 +47,7 @@ public class OrderEventMqConfiguration {
      * @return
      */
     @Bean
-    public Queue orderDelayQueue(){
+    public Queue orderDelayQueue() {
         /**
          * String name,
          * boolean durable,
@@ -57,16 +57,16 @@ public class OrderEventMqConfiguration {
          */
         Map<String, Object> arguments = new HashMap<>();
         //设置延迟队列参数
-        arguments.put("x-message-ttl", SysRedisConst.ORDER_CLOSE_TTL*1000);
-        arguments.put("x-dead-letter-exchange",MqConst.EXCHANGE_ORDER_EVNT);
-        arguments.put("x-dead-letter-routing-key",MqConst.RK_ORDER_DEAD);
+        arguments.put("x-message-ttl", SysRedisConst.ORDER_CLOSE_TTL * 1000);
+        arguments.put("x-dead-letter-exchange", MqConst.EXCHANGE_ORDER_EVNT);
+        arguments.put("x-dead-letter-routing-key", MqConst.RK_ORDER_DEAD);
 
         return new Queue(MqConst.QUEUE_ORDER_DELAY,
                 true,
                 false,
                 false,
                 arguments
-                );
+        );
     }
 
     /**
@@ -74,7 +74,7 @@ public class OrderEventMqConfiguration {
      * @return
      */
     @Bean
-    public Binding orderDelayQueueBinding(){
+    public Binding orderDelayQueueBinding() {
         /**
          * String destination, 目的地
          * DestinationType destinationType, 目的地类型
@@ -85,13 +85,13 @@ public class OrderEventMqConfiguration {
          * 这个exchange交换机和这个destinationType类型的目的地（destination）
          * 使用routingKey进行绑定，
          */
-       return new Binding(
-               MqConst.QUEUE_ORDER_DELAY,
-               Binding.DestinationType.QUEUE,
-               MqConst.EXCHANGE_ORDER_EVNT,
-               MqConst.RK_ORDER_CREATED,
-               null
-               );
+        return new Binding(
+                MqConst.QUEUE_ORDER_DELAY,
+                Binding.DestinationType.QUEUE,
+                MqConst.EXCHANGE_ORDER_EVNT,
+                MqConst.RK_ORDER_CREATED,
+                null
+        );
     }
 
     /**
@@ -99,7 +99,7 @@ public class OrderEventMqConfiguration {
      * @return
      */
     @Bean
-    public Queue orderDeadQueue(){
+    public Queue orderDeadQueue() {
         /**
          * String name,
          * boolean durable,
@@ -118,7 +118,7 @@ public class OrderEventMqConfiguration {
      * @return
      */
     @Bean
-    public Binding orderDeadQueueBinding(){
+    public Binding orderDeadQueueBinding() {
         return new Binding(MqConst.QUEUE_ORDER_DEAD,
                 Binding.DestinationType.QUEUE,
                 MqConst.EXCHANGE_ORDER_EVNT,
@@ -126,8 +126,19 @@ public class OrderEventMqConfiguration {
                 null);
     }
 
-
-
+    /**
+     * 支付成功单队列
+     * @return
+     */
+    @Bean
+    public Queue payedQueue() {
+        return new Queue(
+                MqConst.QUEUE_ORDER_PAYED,
+                true,
+                false,
+                false
+        );
+    }
 
 
 }
