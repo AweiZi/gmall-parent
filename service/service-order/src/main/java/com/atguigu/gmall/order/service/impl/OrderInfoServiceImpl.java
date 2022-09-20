@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo>
-        implements OrderInfoService{
+        implements OrderInfoService {
     @Autowired
     OrderInfoMapper orderInfoMapper;
 
@@ -44,20 +44,20 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     @Transactional
     @Override
-    public Long saveOrder(OrderSubmitVo submitVo,String tradeNo) {
+    public Long saveOrder(OrderSubmitVo submitVo, String tradeNo) {
         //1、准备订单数据
-        OrderInfo orderInfo = prepareOrderInfo(submitVo,tradeNo);
+        OrderInfo orderInfo = prepareOrderInfo(submitVo, tradeNo);
         //2、保存-OrderInfo
         orderInfoMapper.insert(orderInfo);
 
         //2、保存-OrderDetail
         //订单明细。指这个订单到底买了那些商品？
         //所有订单明细
-        List<OrderDetail> details = prepareOrderDetail(submitVo,orderInfo);
+        List<OrderDetail> details = prepareOrderDetail(submitVo, orderInfo);
         orderDetailService.saveBatch(details);
         //发送订单创建完成消息
 
-        OrderMsg orderMsg = new OrderMsg(orderInfo.getId(),orderInfo.getUserId());
+        OrderMsg orderMsg = new OrderMsg(orderInfo.getId(), orderInfo.getUserId());
         rabbitTemplate.convertAndSend(
                 MqConst.EXCHANGE_ORDER_EVNT,
                 MqConst.RK_ORDER_CREATED,
@@ -76,7 +76,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<String> expects = expected.stream().map(status -> status.name()).collect(Collectors.toList());
 
         //幂等修改订单
-        orderInfoMapper.updateOrderStatus(orderId,userId,processStatus,orderStatus,expects);
+        orderInfoMapper.updateOrderStatus(orderId, userId, processStatus, orderStatus, expects);
 
     }
 
@@ -99,10 +99,29 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         return info;
     }
 
+    @Override
+    public Long submitSeckillOrder(OrderInfo info) {
+
+        //1.保存秒杀单
+        int insert = orderInfoMapper.insert(info);
+        Long id = info.getId();
+
+        //2.保存明细
+        List<OrderDetail> list = info.getOrderDetailList();
+        list.stream()
+                .forEach(orderDetail -> {
+                    orderDetail.setOrderId(id);
+                });
+
+        orderDetailService.saveBatch(list);
+        return id;
+    }
+
     /**
      * 订单明细
      * @param submitVo
      * @param orderInfo
+     *
      * @return
      */
     private List<OrderDetail> prepareOrderDetail(OrderSubmitVo submitVo, OrderInfo orderInfo) {
@@ -130,12 +149,11 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         return detailList;
     }
 
-    private OrderInfo prepareOrderInfo(OrderSubmitVo submitVo,String tradeNo) {
+    private OrderInfo prepareOrderInfo(OrderSubmitVo submitVo, String tradeNo) {
         OrderInfo info = new OrderInfo();
         //收货人
         info.setConsignee(submitVo.getConsignee());
         info.setConsigneeTel(submitVo.getConsigneeTel());
-
 
 
         //用户id
